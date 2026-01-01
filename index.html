@@ -1,1 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Table</title>
+</head>
+<body>
+  <h2>Tode list</h2>
 
+  <form id="inputForm">
+    <input type="text" id="nameInput" placeholder="Enter Name" required />
+    <input type="number" id="ageInput" placeholder="Enter Age" required />
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="tableContainer"></div>
+
+  <script>
+    
+    let data = [
+      { id: 1, name: "Rajesh", age: 22 },
+      { id: 2, name: "Kiran", age: 24 },
+      { id: 3, name: "Asha", age: 21 },
+      { id: 4, name: "Deepak", age: 23 },
+    ];
+
+    const tableContainer = document.getElementById("tableContainer");
+    const form = document.getElementById("inputForm");
+
+    function renderTable() {
+      if (data.length === 0) {
+        tableContainer.innerHTML = "<p>No data available.</p>";
+        return;
+      }
+
+      let tableHTML = `
+        <table>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Action</th>
+          </tr>
+      `;
+
+      for (let item of data) {
+        tableHTML += `
+          <tr>
+            <td>${item.id}</td>
+            <td>${item.name}</td>
+            <td>${item.age}</td>
+            <td><button onclick="deleteRow(${item.id})">Delete</button></td>
+          </tr>
+        `;
+      }
+
+      tableHTML += "</table>";
+      tableContainer.innerHTML = tableHTML;
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault(); 
+
+      const name = document.getElementById("nameInput").value.trim();
+      const age = document.getElementById("ageInput").value.trim();
+
+      if (name === "" || age === "") {
+        alert("Please enter both name and age!");
+        return;
+      }
+
+      const newId = data.length > 0 ? Math.max(...data.map(d => d.id)) + 1 : 1;
+      data.push({ id: newId, name: name, age: parseInt(age) });
+
+      document.getElementById("nameInput").value = "";
+      document.getElementById("ageInput").value = "";
+
+      renderTable();
+    });
+
+    function deleteRow(id) {
+      data = data.filter(item => item.id !== id);
+      renderTable();
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>
